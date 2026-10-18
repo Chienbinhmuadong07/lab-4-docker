@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+*.env
+
+.venv/
+venv/
+env/
+
+__pycache__/
+*.py[cod]
+
+.vscode/
+.idea/
+
+.git/
+# File cache Python
+**/__pycache__/
+*.py[cod]

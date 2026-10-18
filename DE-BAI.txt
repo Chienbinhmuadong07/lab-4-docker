@@ -1,0 +1,86 @@
+========================================================================
+  BÀI LAB BUỔI 4 — CHO ỨNG DỤNG "NHỚ" ĐƯỢC LỊCH SỬ HỘI THOẠI
+  (Cấu hình cơ sở dữ liệu PostgreSQL cho ứng dụng chat FastAPI)
+  Thời lượng: 1 giờ 30 phút — làm cá nhân, KHÔNG cần AI
+========================================================================
+
+
+------------------------------------------------------------------------
+1. BỐI CẢNH — CHUYỆN GÌ ĐÃ XẢY RA
+------------------------------------------------------------------------
+
+Ở buổi 3, cả lớp đã dựng được một ứng dụng chat: người dùng gửi câu hỏi
+tới endpoint /chat, ứng dụng gọi LLM và trả lời. Ứng dụng chạy tốt, NHƯNG
+có một nhược điểm lớn:
+
+    >> Cứ TẮT ứng dụng đi là quên sạch. Bật lại thì trắng trơn,
+       không còn một câu hội thoại nào.
+
+Lý do: mọi thứ chỉ nằm trong BỘ NHỚ (RAM). Bộ nhớ mất khi tắt chương
+trình. Muốn giữ lại dữ liệu sau khi tắt/bật, ta cần một nơi lưu trữ BỀN
+VỮNG — đó chính là CƠ SỞ DỮ LIỆU (ở đây dùng PostgreSQL).
+
+Một bạn ở nhóm trước đã bắt đầu việc "gắn cơ sở dữ liệu" vào ứng dụng,
+nhưng làm DANG DỞ rồi bàn giao lại. Cụ thể bạn ấy để lại:
+
+    - Một lớp kết nối cơ sở dữ liệu (app/db.py) nhưng phần LƯU và ĐỌC
+      dữ liệu vẫn còn để trống (báo lỗi NotImplementedError).
+    - Endpoint /chat và /history trong app/main.py chưa được nối vào
+      cơ sở dữ liệu (vẫn chưa lưu gì, /history luôn trả về rỗng).
+    - Chưa tạo bảng "messages" trong cơ sở dữ liệu.
+    - Chưa có tập tin .env, nên ứng dụng chưa biết kết nối tới đâu.
+
+Ngoài ra, trong thư mục loi/ còn có 3 đoạn chương trình chạy bị LỖI mà
+bạn ấy dặn lại: "3 lỗi SQL hay gặp nhất, ai đọc log giỏi thì tự sửa được".
+
+
+------------------------------------------------------------------------
+2. NHIỆM VỤ CỦA BẠN — CẦN GIẢI QUYẾT ĐIỀU GÌ
+------------------------------------------------------------------------
+
+Hoàn thiện ứng dụng để nó LƯU được và ĐỌC lại được lịch sử hội thoại.
+Kết thúc buổi, ứng dụng phải đạt 3 điều (đây cũng là CHECKPOINT):
+
+    [1] Kết nối được tới PostgreSQL bằng DATABASE_URL trong .env.
+    [2] Mỗi lượt gọi /chat lưu CẢ câu hỏi của người dùng LẪN câu trả lời
+        vào bảng messages.
+    [3] Truy vấn lại (qua /history hoặc script kiểm tra) thấy lịch sử
+        đã được lưu ĐÚNG.
+
+Và làm thêm BÀI LAB LỖI (bắt buộc): đọc log của 3 đoạn chương trình
+trong thư mục loi/, xác định nguyên nhân từng lỗi, rồi sửa cho chạy được.
+
+
+------------------------------------------------------------------------
+3. NHỮNG CHỖ BẠN PHẢI TỰ VIẾT (tìm chữ "TODO" trong mã nguồn)
+------------------------------------------------------------------------
+
+    a) Tạo tập tin .env (từ .env.example) và điền DATABASE_URL cho đúng.
+    b) Tạo bảng messages (chạy sql/create_table.sql).
+    c) Hoàn thiện hàm luu_tin_nhan()  trong app/db.py.
+    d) Hoàn thiện hàm doc_lich_su()   trong app/db.py.
+    e) Nối endpoint /chat gọi luu_tin_nhan() cho câu hỏi và câu trả lời.
+    f) Nối endpoint /history trả về doc_lich_su().
+    g) Sửa 3 lỗi trong thư mục loi/.
+
+
+------------------------------------------------------------------------
+4. TIÊU CHÍ ĐẠT (bạn tự chấm được, không cần hỏi ai)
+------------------------------------------------------------------------
+
+Chạy lệnh:  python kiem_tra.py
+
+Nếu tất cả các dòng đều hiện [ĐẠT] thì bạn đã hoàn thành bài lab chính.
+Sau đó chạy 3 file trong loi/ và bảo đảm không còn báo lỗi.
+
+------------------------------------------------------------------------
+5. GHI CHÚ
+------------------------------------------------------------------------
+
+- Bài lab KHÔNG cần API key và KHÔNG cần Internet. LLM ở đây là "LLM giả
+  lập" (app/llm.py) — nó chỉ vọng lại câu hỏi. Nhờ vậy ai cũng chạy được,
+  kể cả khi không có AI. Toàn bộ trọng tâm buổi này là CƠ SỞ DỮ LIỆU.
+- Đọc kỹ hướng dẫn từng bước trong README.md.
+- Bí quá thì mở thư mục giai/ để đối chiếu — nhưng hãy TỰ LÀM trước đã,
+  vì kỹ năng đọc log lỗi SQL mới là thứ bạn cần mang theo.
+========================================================================

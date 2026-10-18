@@ -1,0 +1,41 @@
+========================================================================
+  ĐÁP ÁN & GIẢI THÍCH — chỉ mở khi đã TỰ LÀM (dành cho tự đối chiếu / GV)
+========================================================================
+
+--- PHẦN CHÍNH ---------------------------------------------------------
+
+app/db.py  -> xem file db_giai.py trong thư mục này.
+    - luu_tin_nhan(): INSERT ... RETURNING id, NHỚ conn.commit().
+    - doc_lich_su(): SELECT ... ORDER BY created_at.
+
+app/main.py:
+    Trong /chat, thêm 2 dòng trước "return":
+        db.luu_tin_nhan("user", cau_hoi)
+        db.luu_tin_nhan("assistant", cau_tra_loi)
+    Trong /history, đổi thành:
+        return {"messages": db.doc_lich_su()}
+
+
+--- BÀI LAB LỖI -------------------------------------------------------
+
+LỖI 1 (loi_1_ket_noi.py) — "connection refused"
+    Sai CỔNG. Đang để 9999, PostgreSQL nghe ở 5432.
+    Sửa:  ...@localhost:5432/chatdb
+    Bài học: connection refused = sai địa chỉ/cổng, hoặc CSDL chưa chạy.
+
+LỖI 2 (loi_2_bang_chua_ton_tai.py) — relation "message" does not exist
+    Sai TÊN BẢNG. Đang viết "message", bảng thật là "messages".
+    Sửa:  SELECT COUNT(*) FROM messages
+    Bài học: relation ... does not exist = sai tên bảng, hoặc chưa tạo
+    bảng / chưa chạy migration.
+
+LỖI 3 (loi_3_sai_kieu.py) — invalid input syntax for type integer: "một"
+    SAI KIỂU. Cột id là số nguyên, mà truyền vào chữ "một".
+    Sửa:  id_can_tim = 1
+    Bài học: invalid input syntax for type integer = đưa sai kiểu dữ liệu
+    vào cột.
+
+========================================================================
+Ba lỗi này chính là 3 lỗi ở slide 15 của bài giảng. Kỹ năng đọc đúng
+từng dòng thông báo lỗi SQL là thứ quan trọng nhất mang theo sau buổi 4.
+========================================================================

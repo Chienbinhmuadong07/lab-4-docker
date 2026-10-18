@@ -1,0 +1,5 @@
+# Thư viện cần cho bài lab. Cài bằng:  pip install -r requirements.txt
+fastapi            # khung ứng dụng web (đã dùng từ buổi 3)
+uvicorn            # máy chủ chạy FastAPI
+psycopg2-binary    # driver kết nối PostgreSQL cho Python
+python-dotenv      # đọc biến từ tập tin .env
